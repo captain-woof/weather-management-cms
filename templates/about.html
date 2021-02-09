@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+<h3 style="margin: 2rem;">About</h3>
+<script>
+	var tryy=0;
+	function show_real_about(){
+		tryy++;
+		if(tryy==6){
+			var about_body=document.getElementById('about_body');
+			about_body.innerText="Honestly though, since this is just a POC prototype, the concept of 'weather stations' used here is just fake; we are collecting the data from another source.\n\nYou can only register for those locations that the admin has added to our database and actually have an 'operator' account associated with it.\n\nIn real application, the database would be filled up with entries of real weather stations, where the operators would use their dashboard to turn on the actual instruments and devices, and that in turn will periodically use our APIs to talk back to the system and store data.\n\nLong story short, you get all the data you need with minimal efforts, perfectly synchronized and simple.";
+		}
+	}
+</script>
+<table style="margin-left: 2rem; margin-right: 2rem" cellpadding="12rem">
+	<tr>
+		<td><img src="{{ url_for('static',filename='images/teamwork.jpg') }}" onclick="show_real_about()" style="max-width: 300px"></td>
+		<td id="about_body">
+			"Weather Information System" is where you can register at to view the weather at your location, plus query for data from any place, provided that we have a weather station at that place. Simply create an account and <a href="{{ url_for('register') }}">get started</a>.<br/></br>
+			This webapp is managed by our 'expert' team of individuals, and is kept in constant improvements over time and maintenance.
+		</td>
+	</tr>
+</table>
+{% endblock %}

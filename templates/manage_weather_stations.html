@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+<table style="margin-left: auto; margin-right: auto;" cellpadding="32rem">
+	<tr valign="top">
+		<td>
+			<h3>Manage Weather Stations</h3><br/>
+		<div class="card" style="min-width: 24rem;">
+		  <div class="card-body">
+		   <h3>Existing</h3>
+			<table class="table">
+			  <thead>
+			    <tr>      
+			      <th scope="col">ID</th>
+			      <th scope="col">Location</th>
+			      <th scope="col">Action</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			  	{% for row in all_weather_stations %}
+			    <tr>      
+			      <td>{{ row['weatherStationID'] }}</td>
+			      <td>{{ row['location'] }}</td>
+			      <td><button id="delete_station_button" type="button" class="btn btn-danger" onclick=this.style.opacity=0.8;this.innerText='Deleting...';delete_station({{ row['weatherStationID'] }})>Delete</button></td>
+			    </tr>
+			    {% endfor %}    
+			  </tbody>
+			</table>
+		  </div>
+		</div>	
+		</td>	
+
+		<td>			
+			<div class="card mb-3" style="margin: 1rem; padding: 1rem">
+				<h3>Add new</h3>
+			  <div class="row g-0">
+			  	<img src="{{ url_for('static',filename='images/weather_station.jpg') }}" alt="Add new weather station" style="align-self: center; max-width: 300px;">    
+			    <div class="col-md-8">
+			      <div class="card-body">
+			    	<div class="mb-3">
+				    <label for="weatherStationID" class="form-label">Weather Station ID</label>
+				    <input type="form-text" class="form-control" id="weatherStationID" aria-describedby="idHelp" name="weatherStationID" value="{{ request.form['weatherStationID'] }}">	    
+				  </div>
+				  <div class="mb-3">
+				    <label for="location" class="form-label">Location</label>
+				    <input type="form-text" class="form-control" id="location" aria-describedby="locationHelp" name="email" value="{{ request.form['location'] }}">	    
+				  </div>			      
+				  <button id="submit_new_station_button" onclick="add_station(document.getElementById('weatherStationID').value,document.getElementById('location').value)" type="submit" class="btn btn-primary" style="background-color: #21566e">Add</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</td>
+	</tr>
+</table>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+<br/>
+<table style="margin-left: auto; margin-right: auto;" cellpadding="8rem">
+	<thead>
+		<tr>
+			<th><h3><b>Manage privileged users</b></h3></th>
+		</tr>
+	</thead>
+	<tr valign="top">
+		<td>
+			<div class="card" style="min-width: 24rem;">
+		  <div class="card-body">	
+		  	<h3>Privileged Users</h3>
+			<table class="table">
+			  <thead>
+			    <tr>      
+			      <th scope="col">Email</th>
+			      <th scope="col">Fullname</th>
+			      <th scope="col">Role</th>
+			      <th scope="col">Location</th>
+			      <th scope="col">Action</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			  	{% for row in all_priv_users %}
+			    <tr>      
+			      <td>{{ row['email'] }}</td>
+			      <td>{{ row['fullname'] }}</td>
+			      <td>{{ row['user_role'] }}</td>
+			      <td>{{ row['location'] }}</td>			      
+			      <td><button id="delete_priv_user_button" type="button" class="btn btn-danger" onclick=this.style.opacity=0.8;this.innerText='Deleting...';delete_priv_user("{{ row['email'] }}")>Delete</button></td>
+			    </tr>
+			    {% endfor %}    
+			  </tbody>
+			</table>
+		  </div>
+		</div>
+		</td>		
+
+		<td>			
+			<div class="card" style="width: 24rem;">
+			  <img src="{{ url_for('static',filename='images/clear_night.jpg') }}" class="card-img-top" alt="">
+			  <div class="card-body">
+			  	<h3>Add new</h3>
+			    <div class="mb-3">
+				    <label for="fullname" class="form-label">Full name</label>
+				    <input type="form-text" class="form-control" id="fullname" aria-describedby="fullnameHelp" name="fullname" value="{{ request.form['fullname'] }}">	    
+				  </div>
+				  <div class="mb-3">
+				    <label for="email" class="form-label">Email</label>
+				    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" value="{{ request.form['email'] }}">	    
+				  </div>
+				  <div class="mb-3">
+				    <label for="password" class="form-label">Password</label>
+				    <input type="password" class="form-control" id="password" aria-describedby="passwordHelp" name="password" value="{{ request.form['password'] }}">	    
+				  </div>
+				  <label for="user_role" class="form-label">User role</label>
+					<input name="user_role" class="form-control" list="user_role_list" id="user_role" placeholder="Type to search...">
+					<datalist id="user_role_list">
+					  <option value="instrument_operator">Weather Station Operator</option>
+					  <option value="admin">Admin</option>
+					</datalist>
+				  <div class="mb-3">
+				    <label for="location" class="form-label">Location</label>
+
+				    <input class="form-control" list="location_list" id="location" placeholder="Type to search..." name="location">
+				     <datalist id="location_list">        
+				        {% for row in supported_locations %}
+				          <option value="{{ row['location'] }}"></option>
+				        {% endfor %}
+				      </datalist> 
+				  </div>			      
+				  <button id="submit_new_priv_user_button" onclick="add_priv_user(document.getElementById('fullname').value,document.getElementById('email').value,document.getElementById('password').value,document.getElementById('user_role').value,document.getElementById('location').value)" type="submit" class="btn btn-primary" style="background-color: #21566e">Add</button>
+  </div>
+</div>
+		</td>
+	</tr>
+</table>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block main_content %}
+
+<center>
+<div class="row" style="margin: 1em">
+	<div class="col-sm-6">
+		<div class="card">
+			<img src="{{ url_for('static',filename='images/login.jpg') }}" class="card-img-top" alt="Login" style="max-height: 70%; max-width: 70%; align-self: center;">
+			<div class="card-body">
+				<h5 class="card-title">See Today's Weather</h5>
+				<p class="card-text">Login to see today's weather</p>
+				<a href="{{ url_for('login') }}" class="btn btn-primary" style="background-color: #21566e">Login</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-6">
+		<div class="card">
+			<img src="{{ url_for('static',filename='images/register.jpg') }}" class="card-img-top" alt="Register" style="max-height: 70%; max-width: 70%; align-self: center;">
+			<div class="card-body">
+				<h5 class="card-title">New here?</h5>
+				<p class="card-text">Signup if you're new here and get access to weather-data 24x7</p>
+				<a href="{{ url_for('register') }}" class="btn btn-primary" style="background-color: #21566e">Register</a>
+			</div>
+		</div>
+	</div>
+</div>
+</center>
+{% endblock %}

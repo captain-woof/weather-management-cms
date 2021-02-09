@@ -1,0 +1,435 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}    	
+    	<div class="alert alert-success">{{ message }}</div>
+    	<script>    		
+    		var welcome_alert = document.getElementsByClassName('alert alert-success')[0];    		
+    		fadeOutElement(welcome_alert,2,2);
+    	</script>
+    {% endfor %}
+</div>
+
+<!-- Main Dashboard -->
+{% if isAdmin %}
+<table style="margin-left: auto; margin-right: auto;" cellpadding="4rem">
+	<thead>
+		<tr>
+			<th><h4><b>Manage</b></h4></th>
+			<th><h4><b>Weather Station Status</b></h4></th>	
+		</tr>
+	</thead>
+	<tr valign="top">
+		<td style="padding-right: 3rem; padding-left: 3rem;">
+		<!-- FOR MANAGING STATIONS -->		
+		<div onclick="document.location='/manage/weatherStations'" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">
+			<div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+			  <div class="card-body">
+			    <h5 class="card-title">Manage Weather Stations</h5>
+			    <p class="card-text">Use this to add or delete weather stations.</p>
+			  </div>
+			</div>
+		</div>
+			<!-- FOR MANAGING PRIV USERS -->
+		<div onclick="document.location='/manage/privUsers'" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">
+			<div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+			  <div class="card-body">
+			    <h5 class="card-title">Manage Privileged Users</h5>
+			    <p class="card-text">Use this to add or delete admins and instrument operators.</p>
+			  </div>
+			</div>
+		</div>
+		</td>
+		<!-- FOR FAULTY STATIONS -->
+		<td>								
+			<div class="card text-dark bg-warning mb-3" style="min-width: 17rem;">
+			<div class="card-header"><h4>Faulty</h4></div>
+			  <div class="card-body">
+				    <table class="table">
+					  <thead>
+					    <tr>      
+					      <th scope="col">ID</th>
+					      <th scope="col">Location</th>
+					      <th scope="col">Action</th>
+					    </tr>
+					  </thead>
+					  <tbody id="fault_table_body">					  	
+					  </tbody>
+					</table>
+			  </div>
+			</div>
+		</td>
+
+		<!-- FOR GOOD STATIONS -->
+		<td>		
+			<div class="card text-dark bg-light mb-3" style="min-width: 17rem;">
+			<div class="card-header"><h4>Running</h4></div>
+			  <div class="card-body">			    
+				    <table class="table">
+					  <thead>
+					    <tr>      
+					      <th scope="col">ID</th>
+					      <th scope="col">Location</th>
+					    </tr>
+					  </thead>
+					  <tbody id="working_table_body">					  	
+					  </tbody>
+					</table>
+			  </div>
+			</div>
+		</td>
+
+		<!-- NOT WORKING STATIONS -->
+		<td>			
+			<div class="card text-white bg-dark mb-3" style="min-width: 17rem;">
+			<div class="card-header"><h4>Not running</h4></div>
+			  <div class="card-body">			    
+				    <table class="table text-white">
+					  <thead>
+					    <tr>      
+					      <th scope="col">ID</th>
+					      <th scope="col">Location</th>
+					    </tr>
+					  </thead>
+					  <tbody id="not_working_table_body">					  	
+					  </tbody>
+					</table>
+			  </div>
+			</div>
+		</td>		
+	</tr>
+</table>
+<script>
+keepUpdatingAdminUi();
+</script>
+
+{% elif isInstrumentOperator %}
+<table style="margin-left: auto; margin-right: auto;">
+<tr>
+<td>
+<h4>Weather Station: <b>{{ weatherStation['location'] }}</b></h4>
+<div class="card" style="width: 22rem;">
+<img src="{{ url_for('static',filename='images/weather_station.jpg') }}" class="card-img-top" alt="Weather Station">
+<div class="card-header">Instruments</div>
+<div class="card-body">
+	<table>
+		<tr>
+			<td>
+				<h6>Status:</h6>
+			</td>
+			<td>
+				<h5 class="" id="weather_station_status"></h5>
+			</td>
+		</tr>
+	</table>	
+	
+	<a style="opacity: 0" type="button" id="weatherStationButton" class="btn btn-primary" href="#" role="button"></a>
+</div>
+</div>
+</td>
+<td style="padding-left: 10rem;">
+<div class="card" style="width: 22rem;">
+<img src="images/no_data.jpg" class="card-img-top" alt="Weather Thumbnail" id="weather_thumbnail">
+<div class="card-header" id="last_updated">Last updated: </div>
+<div class="card-body">
+<table>
+	<tr>
+		<td>
+			<h5 class="card-title">Latest Update</h5>
+		</td>
+		<td>
+			<img src="" id="weather_icon" width="100px" height="100px">
+		</td>
+	</tr>
+</table>			    	  
+	<table>
+		<tr>
+			<td>
+				Location:
+			</td>
+			<td id="location">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Country:
+			</td>
+			<td id="country">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Temperature:
+			</td>
+			<td id="temperature">
+			</td>
+		</tr>		
+		<tr>
+			<td>
+				Wind Speed:
+			</td>
+			<td id="wind_speed">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Wind Direction:
+			</td>
+			<td id="wind_direction">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Pressure:
+			</td>
+			<td id="pressure">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Precipitation:
+			</td>
+			<td id="precipitation">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Cloud:
+			</td>
+			<td id="cloud">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Humidity:
+			</td>
+			<td id="humidity">
+			</td>
+		<tr>
+			<td>
+				Condition:
+			</td>
+			<td id="condition">
+			</td>
+		</tr>
+		</tr>
+	</table>
+</td>
+</tr>
+</table>
+<script>keepUpdatingInstrumentOperatorUi();</script>
+
+{% else %}
+<table style="margin-left: auto; margin-right: auto;">
+<tr>
+<td>
+<div class="card" style="width: 22rem;">
+<img src="" class="card-img-top" alt="Weather Thumbnail" id="weather_thumbnail">
+<div class="card-header" id="last_updated">Last updated: </div>
+<div class="card-body">
+<table>
+	<tr>
+		<td>
+			<h5 class="card-title">Latest Update</h5>
+		</td>
+		<td>
+			<img src="" id="weather_icon" width="100px" height="100px">
+		</td>
+	</tr>
+</table>			    	  
+	<table>
+		<tr>
+			<td>
+				Location:
+			</td>
+			<td id="location">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Country:
+			</td>
+			<td id="country">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Temperature:
+			</td>
+			<td id="temperature">
+			</td>
+		</tr>		
+		<tr>
+			<td>
+				Wind Speed:
+			</td>
+			<td id="wind_speed">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Wind Direction:
+			</td>
+			<td id="wind_direction">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Pressure:
+			</td>
+			<td id="pressure">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Precipitation:
+			</td>
+			<td id="precipitation">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Cloud:
+			</td>
+			<td id="cloud">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Humidity:
+			</td>
+			<td id="humidity">
+			</td>
+		<tr>
+			<td>
+				Condition:
+			</td>
+			<td id="condition">
+			</td>
+		</tr>
+		</tr>
+	</table>
+</td>
+<td style="padding-left: 4rem;">
+	<h3>Search weather</h3>
+	<table>
+		<tr>			
+			<td>
+				<table cellpadding="3rem">
+					<tr>
+						<td>
+							<input class="form-control" list="supported_locations" id="supported_locations_list" placeholder="Type location to get weather at other places..." name="new_location">
+							<datalist id="supported_locations">
+							  {% for row in supported_locations %}
+					          <option value="{{ row['location'] }}"></option>
+					          {% endfor %}
+							</datalist>
+						</td>
+						<td>
+							<div class="col-auto" style="margin-top: 1rem">
+			    			<button id="search_location_button" type="submit" class="btn btn-primary mb-3" onclick=search_location()>Search</button>
+			  				</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table cellpadding="16rem">
+					<tr>
+						<td>
+							<h4 id="last_updated_1"></h4>
+							<img src="" id="weather_thumbnail_1">
+						</td>
+						<td>
+							<table>
+								<tr>
+									<td>
+										<img src="" id="weather_icon_1" style="max-width: 100px; max-height: 100px">
+									</td>
+								</tr>
+								<tr>									
+									<td>
+										Location:
+									</td>
+									<td id="location_1">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Country:
+									</td>
+									<td id="country_1">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Temperature:
+									</td>
+									<td id="temperature_1">
+									</td>
+								</tr>		
+								<tr>
+									<td>
+										Wind Speed:
+									</td>
+									<td id="wind_speed_1">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Wind Direction:
+									</td>
+									<td id="wind_direction_1">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Pressure:
+									</td>
+									<td id="pressure_1">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Precipitation:
+									</td>
+									<td id="precipitation_1">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Cloud:
+									</td>
+									<td id="cloud_1">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Humidity:
+									</td>
+									<td id="humidity_1">
+									</td>
+								<tr>
+									<td>
+										Condition:
+									</td>
+									<td id="condition_1">
+									</td>
+								</tr>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+<script>
+keepUpdatingUserUi();
+</script>
+{% endif %}				
+				
+{% endblock %}
