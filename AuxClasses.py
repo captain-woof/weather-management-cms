@@ -9,7 +9,7 @@ from threading import Thread
 class DBHelper:
 	@staticmethod
 	def get_connection():
-		conn = sqlite3.connect('wis_database.db')
+		conn = sqlite3.connect('wis_database.db',timeout=30)
 		return conn
 
 	@staticmethod

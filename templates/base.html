@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Responsive Table CSS -->
+    <link href="{{ url_for('static', filename='css/responsive_table.css') }}" rel="stylesheet">
 
     <!-- MyScript -->
     <script src="{{ url_for('static',filename='js/functions.js') }}"></script>
@@ -16,7 +19,7 @@
   </head>
   <body>
   	<!-- NavBar -->
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #21566e">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #21566e">  
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url_for('index') }}">Weather Information CMS</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

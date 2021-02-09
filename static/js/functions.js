@@ -843,7 +843,7 @@ function delete_priv_user(email){
 function updateAdminUi(){	
 	// FOR FAULTY
 	var fault_table=document.getElementById('fault_table_body');
-	var new_fault_table=document.createElement('tbody');
+	var ccc=document.createElement('tbody');
 	var xhr=new XMLHttpRequest();
 	xhr.open('GET','/api/getFaultyStations',true);
 	xhr.onload=function(){
@@ -870,16 +870,16 @@ function updateAdminUi(){
 			tr.appendChild(td_weatherStationID);
 			tr.appendChild(td_location);			
 
-			new_fault_table.appendChild(tr);
+			ccc.appendChild(tr);
 		}
 
-		fault_table.parentNode.replaceChild(new_fault_table,fault_table);
-		new_fault_table.id="fault_table_body";
+		fault_table.parentNode.replaceChild(ccc,fault_table);
+		ccc.id="fault_table_body";
 	};
 
 	// FOR WORKING
 	var working_table=document.getElementById('working_table_body');
-	var new_working_table=document.createElement('tbody');
+	var bbb=document.createElement('tbody');
 	var xhr2=new XMLHttpRequest();
 	xhr2.open('GET','/api/getWorkingStations',true);
 	xhr2.onload=function(){
@@ -906,16 +906,17 @@ function updateAdminUi(){
 			tr.appendChild(td_weatherStationID);
 			tr.appendChild(td_location);			
 
-			new_not_working_table.appendChild(tr);
+			bbb.appendChild(tr);
+
 		}
 
-		working_table.parentNode.replaceChild(new_working_table,working_table);
-		new_working_table.id="working_table_body";
+		working_table.parentNode.replaceChild(bbb,working_table);
+		bbb.id="working_table_body";
 	};
 
 	// FOR NOT WORKING
 	var not_working_table=document.getElementById('not_working_table_body');
-	var new_not_working_table=document.createElement('tbody');
+	var aaa=document.createElement('tbody');
 	var xhr3=new XMLHttpRequest();
 	xhr3.open('GET','/api/getNotWorkingStations',true);
 	xhr3.onload=function(){
@@ -942,11 +943,11 @@ function updateAdminUi(){
 			tr.appendChild(td_weatherStationID);
 			tr.appendChild(td_location);			
 
-			new_not_working_table.appendChild(tr);
+			aaa.appendChild(tr);
 		}
 
-		not_working_table.parentNode.replaceChild(new_not_working_table,not_working_table);
-		new_not_working_table.id="not_working_table_body";
+		not_working_table.parentNode.replaceChild(aaa,not_working_table);
+		aaa.id="not_working_table_body";
 	};
 
 	xhr.send();
