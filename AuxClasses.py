@@ -195,14 +195,8 @@ class DBHelper:
 		except:
 			pass
 		conn.close()
-
-
-class WeatherDataCollectorThread:
-	def __init__(self):		
-		self.weatherApiKey = "9b2cdf8b2dbf4efd9d5104838210602"
-		self.baseURL = "http://api.weatherapi.com/v1/current.json"
-		self.isThreadRunning = False
-
+		
+	@staticmethod
 	def storeWeatherData(self,weather):
 		conn = DBHelper.get_connection()
 		cur = conn.cursor()
@@ -218,45 +212,3 @@ class WeatherDataCollectorThread:
 		except:
 			pass
 		conn.close()
-
-	def collectWeatherData(self):
-		while self.isThreadRunning:
-			print("-"*24 + "\n\t[+] Collecting mass data")
-			self.weatherStations = DBHelper.get_weather_stations()			
-			for each_station in self.weatherStations:
-				if each_station['isWorking'] != 1:
-					continue
-				print("\t[+] Sending request -> {}".format(each_station['location']))
-				params = {'q':each_station['location'],'key':self.weatherApiKey}
-				resp = requests.get(url=self.baseURL,params=params)
-				print("\t[+] Response received -> {}".format(each_station['location']))
-				weatherData = json.loads(resp.text)
-				location = weatherData['location']
-				current = weatherData['current']
-				weather = {}
-				weather['city'] = location['name']
-				weather['country'] = location['country']
-				weather['now_unixtime'] = location['localtime_epoch']
-				weather['last_updated_unixtime'] = current['last_updated_epoch']
-				weather['temperature'] = current['temp_c']
-				weather['isDay'] = current['is_day']
-				weather['condition_text'] = current['condition']['text']
-				weather['condition_icon'] = current['condition']['icon']
-				weather['windspeed'] = current['wind_kph']
-				weather['winddir'] = current['wind_dir']
-				weather['pressure'] = current['pressure_mb']
-				weather['precipitation'] = current['precip_mm']
-				weather['cloud'] = current['cloud']
-				weather['humidity'] = current['humidity']
-				self.storeWeatherData(weather)
-				print("\t[+] Data stored -> {}\n\t".format(each_station['location']) + '-'*24)
-			sleep(60)		
-
-	def start(self):
-		self.thread = Thread(target=self.collectWeatherData)
-		self.thread.daemon = True
-		self.isThreadRunning = True
-		self.thread.start()			
-
-	def stop(self):
-		self.isThreadRunning = False
