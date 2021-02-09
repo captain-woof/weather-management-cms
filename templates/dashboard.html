@@ -13,11 +13,24 @@
 
 <!-- Main Dashboard -->
 {% if isAdmin %}
+<div style="margin-left: 4rem; margin-bottom: 2rem">
+<h3>System</h3>
+<div class="card" style="width: 32rem;">
+  <div class="card-body">
+    <h5 class="card-title">Switch</h5>
+    {% if running_status=="1" %}
+    <a class="btn btn-danger" onclick="turn_off_collector()">Turn off</a>
+    {% else %}
+    <a class="btn btn-success" onclick="turn_on_collector()">Turn on</a>
+    {% endif %}
+  </div>
+</div>
+</div>
 <table style="margin-left: auto; margin-right: auto;" cellpadding="4rem">
 	<thead>
 		<tr>
-			<th><h4><b>Manage</b></h4></th>
-			<th><h4><b>Weather Station Status</b></h4></th>	
+			<th><h3>Manage</h3></th>
+			<th><h3>Weather Station Status</h3></th>	
 		</tr>
 	</thead>
 	<tr valign="top">

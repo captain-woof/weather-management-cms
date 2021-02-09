@@ -959,3 +959,21 @@ function keepUpdatingAdminUi(){
 	updateAdminUi();
 	setInterval(updateAdminUi,10000);
 }
+
+function turn_on_collector(){	
+	var xhr=new XMLHttpRequest();
+	xhr.open('GET',"/api/startCollector",true);
+	xhr.onload=function(){
+		document.location="/dashboard";
+	};
+	xhr.send();
+}
+
+function turn_off_collector(){
+	var xhr=new XMLHttpRequest();
+	xhr.open('GET',"/api/stopCollector",true);
+	xhr.onload=function(){
+		document.location="/dashboard";
+	};
+	xhr.send();
+}

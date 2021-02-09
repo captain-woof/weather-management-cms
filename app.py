@@ -2,11 +2,13 @@
 
 from flask import Flask, escape, redirect, url_for, abort, session, render_template, request, flash
 from hashlib import sha512
-from AuxClasses import DBHelper
+from AuxClasses import DBHelper,WeatherDataCollectorThread
+from threading import Thread
 import json
 
 app = Flask(__name__)
 app.secret_key = "8a7s87%#$%$df78SDSJr45354fd4SK#$)(%$"
+weatherCollectorThread = WeatherDataCollectorThread()
 
 @app.route('/')
 def index():
@@ -64,7 +66,7 @@ def dashboard():
 		weatherStation = DBHelper.get_weather_station(session['location'])
 		return render_template('dashboard.html',page_title="Dashboard",isAdmin=False,isInstrumentOperator=True,weatherStation=weatherStation)
 	elif session['user_role'] == 'admin':
-		return render_template('dashboard.html',page_title="Dashboard",isAdmin=True,isInstrumentOperator=False)
+		return render_template('dashboard.html',page_title="Dashboard",isAdmin=True,isInstrumentOperator=False,running_status=weatherCollectorThread.get_status())
 	else:
 		return render_template('dashboard.html',page_title="Dashboard",isAdmin=False,isInstrumentOperator=False,supported_locations=DBHelper.get_supported_locations(),new_location=session['new_location'])
 	
@@ -86,7 +88,7 @@ def startWeatherDataCollection():
 		if session['user_role'] != 'operator':
 			return abort(403)
 		else:
-			DBHelper.join_weather_station(session)
+			weatherCollectorThread.join_weather_station(session)
 			return redirect(url_for('dashboard'))
 
 @app.route('/api/stopWeatherDataCollection')
@@ -97,7 +99,7 @@ def stopWeatherDataCollection():
 		if session['user_role'] != 'operator':
 			return abort(403)
 		else:
-			DBHelper.detach_weather_station(session)
+			weatherCollectorThread.detach_weather_station(session)
 			return redirect(url_for('dashboard'))
 
 @app.route('/api/getLastWeatherData',methods=['POST','GET'])
@@ -220,6 +222,23 @@ def getNotWorkingStations():
 def about():
 	return render_template('about.html',page_title="About")
 
+@app.route('/api/startCollector')
+def startCollector():
+	if 'email' not in session:
+		return abort(403)
+	if session['user_role'] != 'admin':
+		return abort(403)
+	weatherCollectorThread.start()
+	return "Success"
+
+@app.route('/api/stopCollector')
+def stopCollector():
+	if 'email' not in session:
+		return abort(403)
+	if session['user_role'] != 'admin':
+		return abort(403)
+	weatherCollectorThread.stop()
+	return "Success"
 
 # DRIVER CODE
 if __name__ == '__main__':
