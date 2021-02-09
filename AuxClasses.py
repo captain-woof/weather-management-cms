@@ -173,6 +173,28 @@ class DBHelper:
 		conn.close()
 		res = json.dumps(r) if r is not None else "{}"
 		return res
+	
+	@staticmethod	
+	def join_weather_station(self,session):
+		conn = DBHelper.get_connection()
+		cur = conn.cursor()
+		try:
+			cur.execute("UPDATE weather_stations SET isWorking=1 WHERE weatherStationID=(SELECT weatherStationID FROM weather_stations WHERE location=?)",[session['location']])
+			conn.commit()
+		except:
+			pass
+		conn.close()
+	
+	@staticmethod
+	def detach_weather_station(self,session):
+		conn = DBHelper.get_connection()
+		cur = conn.cursor()
+		try:
+			cur.execute("UPDATE weather_stations SET isWorking=0 WHERE weatherStationID=(SELECT weatherStationID FROM weather_stations WHERE location=?)",[session['location']])
+			conn.commit()
+		except:
+			pass
+		conn.close()
 
 
 class WeatherDataCollectorThread:
@@ -234,27 +256,7 @@ class WeatherDataCollectorThread:
 		self.thread = Thread(target=self.collectWeatherData)
 		self.thread.daemon = True
 		self.isThreadRunning = True
-		self.thread.start()		
-
-	def join_weather_station(self,session):
-		conn = DBHelper.get_connection()
-		cur = conn.cursor()
-		try:
-			cur.execute("UPDATE weather_stations SET isWorking=1 WHERE weatherStationID=(SELECT weatherStationID FROM weather_stations WHERE location=?)",[session['location']])
-			conn.commit()
-		except:
-			pass
-		conn.close()
-
-	def detach_weather_station(self,session):
-		conn = DBHelper.get_connection()
-		cur = conn.cursor()
-		try:
-			cur.execute("UPDATE weather_stations SET isWorking=0 WHERE weatherStationID=(SELECT weatherStationID FROM weather_stations WHERE location=?)",[session['location']])
-			conn.commit()
-		except:
-			pass
-		conn.close()
+		self.thread.start()			
 
 	def stop(self):
 		self.isThreadRunning = False

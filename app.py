@@ -2,13 +2,11 @@
 
 from flask import Flask, escape, redirect, url_for, abort, session, render_template, request, flash
 from hashlib import sha512
-from AuxClasses import DBHelper,WeatherDataCollectorThread
-from threading import Thread
+from AuxClasses import DBHelper
 import json
 
 app = Flask(__name__)
 app.secret_key = "8a7s87%#$%$df78SDSJr45354fd4SK#$)(%$"
-weatherCollectorThread = WeatherDataCollectorThread()
 
 @app.route('/')
 def index():
@@ -88,7 +86,7 @@ def startWeatherDataCollection():
 		if session['user_role'] != 'operator':
 			return abort(403)
 		else:
-			weatherCollectorThread.join_weather_station(session)
+			DBHelper.join_weather_station(session)
 			return redirect(url_for('dashboard'))
 
 @app.route('/api/stopWeatherDataCollection')
@@ -99,7 +97,7 @@ def stopWeatherDataCollection():
 		if session['user_role'] != 'operator':
 			return abort(403)
 		else:
-			weatherCollectorThread.detach_weather_station(session)
+			DBHelper.detach_weather_station(session)
 			return redirect(url_for('dashboard'))
 
 @app.route('/api/getLastWeatherData',methods=['POST','GET'])
@@ -225,15 +223,4 @@ def about():
 
 # DRIVER CODE
 if __name__ == '__main__':
-	try:		
-		weatherCollectorThread.start()
-		print("\t[+] Started Weather Collector Thread...")
-		print("\t[+] Spinning up the WebApp...\n\t" + '-'*36)
-		app.run(debug=True)		
-
-	except KeyboardInterrupt:
-		try:
-			weatherCollectorThread.stop()
-		except:
-			pass
-	
+	app.run(debug=True)
