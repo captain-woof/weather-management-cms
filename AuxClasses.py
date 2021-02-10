@@ -29,7 +29,7 @@ class DBHelper:
 		conn = DBHelper.get_connection()
 		cur = conn.cursor()
 		try:
-			cur.execute("INSERT INTO users(email,password,fullname,user_role,location) VALUES (?,?,?,?,?,)",[email,password,fullname,'user',location])
+			cur.execute("INSERT INTO users(email,password,fullname,user_role,location) VALUES (?,?,?,?,?)",[email,password,fullname,'user',location])
 			conn.commit()
 		except:
 			pass
